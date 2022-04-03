@@ -1,31 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyparser = require('body-parser');
-const bootcampRoutes = require('./routes/bootcamp.routes');
+const bodyParser = require('body-parser');
+const authRoutes = require('./routes/auth');
 const errorHandler = require('./errorHandler/errorHandler');
-const formattedResponse = require('./middleware/response.middleware');
 
 const app = express();
-const url ='mongodb+srv://companykvf:companykvf123@cluster0.xmlz7.mongodb.net/bootcamp';
+const url = 'mongodb+srv://companykvf:companykvf123@cluster0.xmlz7.mongodb.net/authentication';
 
-//connection with mongo db
-main().catch(error => console.log(error));
+main().catch(err => console.log(err));
 async function main() {
     await mongoose.connect(url);
 }
 const con = mongoose.connection;
 con.on('open', () => {
-    console.log("Connection established successfully...");
+    console.log("connection with DB established");
 })
 
-//http req, res cycle handling
-app.use(bodyparser.json());
-app.use('/api/bootcamps', bootcampRoutes);
-app.use('*', (req, res, next) => next(new Error(400)));
-app.use(formattedResponse); //middleware for response to filter data
-app.use(errorHandler);  //errorhandler middleware
+app.use(bodyParser.json());
+app.use('/api/auth', authRoutes);
+app.use(errorHandler);
 
-//port setting
-app.listen(2000, () => {
-    console.log("Server start listening port 2000...");
+app.listen(3000, () => {
+    console.log('Server listening the port 3000');
 })

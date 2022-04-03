@@ -1,16 +1,15 @@
 {
-  "name": "bootcamp_realm",
+  "name": "authentication",
   "version": "1.0.0",
-  "description": "",
+  "description": "Authentication, users and permissions",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js"
   },
-  "keywords": [],
-  "author": "",
+  "author": "yaseen ahmed",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.2",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",

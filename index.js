@@ -1,25 +1,32 @@
+require('dotenv').config()
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const authRoutes = require('./routes/auth');
+const bodyparser = require('body-parser');
+const bootcampRoutes = require('./routes/bootcamp.routes');
 const errorHandler = require('./errorHandler/errorHandler');
+const authRoutes = require('./routes/auth');
 
 const app = express();
-const url = 'mongodb+srv://companykvf:companykvf123@cluster0.xmlz7.mongodb.net/authentication';
+const url ='mongodb+srv://companykvf:companykvf123@cluster0.xmlz7.mongodb.net/bootcamp';
 
-main().catch(err => console.log(err));
+//connection with mongo db
+main().catch(error => console.log(error));
 async function main() {
     await mongoose.connect(url);
 }
 const con = mongoose.connection;
 con.on('open', () => {
-    console.log("connection with DB established");
+    console.log("Connection established successfully...");
 })
 
-app.use(bodyParser.json());
-app.use('/api/auth', authRoutes);
+//http req, res cycle handling
+app.use(bodyparser.json());
+app.use('/api/bootcamps', bootcampRoutes);
+app.use('/api/auth', authRoutes);   //routes of signup and signin
+app.use('*', (req, res, next) => next(new Error(400)));
 app.use(errorHandler);
 
-app.listen(3000, () => {
-    console.log('Server listening the port 3000');
+//port setting
+app.listen(2000, () => {
+    console.log("Server start listening port 2000...");
 })

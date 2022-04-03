@@ -9,6 +9,7 @@ exports.createBootcampCourse = async (req, res, next) => {
         const { cCode, cName, creditHours } = req.body;
 
         const bootcamp = await Bootcamp.findOne({ _id: id }).lean();
+        // console.log("Boootcaaaamp::::", bootcamp);
         if (!bootcamp) {
             throw new Error(404);
         }
@@ -33,12 +34,14 @@ exports.createBootcampCourse = async (req, res, next) => {
 exports.getBootcampCourses = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const bootcamp = await Bootcamp.findOne({ _id: id }).lean();
+        const bootcamp = await Bootcamp.findOne({ _id: id }).sort({creditHours: -1}).lean();
         if (!bootcamp) {
             throw new Error(404);
         }
-        const response = Course.find({bootcamp: id}).populate('bootcamp');
-        next(response); //calling middleware for sorting etc
+        const courses = await Course.find({ bootcamp: id }).populate('bootcamp');
+        res.status(200).json({
+            data: courses
+        });
     } catch (err) {
         next(err);
     }

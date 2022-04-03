@@ -1,9 +1,10 @@
+require('dotenv').config()
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const bootcampRoutes = require('./routes/bootcamp.routes');
 const errorHandler = require('./errorHandler/errorHandler');
-const formattedResponse = require('./middleware/response.middleware');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const url ='mongodb+srv://companykvf:companykvf123@cluster0.xmlz7.mongodb.net/bootcamp';
@@ -21,9 +22,9 @@ con.on('open', () => {
 //http req, res cycle handling
 app.use(bodyparser.json());
 app.use('/api/bootcamps', bootcampRoutes);
+app.use('/api/auth', authRoutes);   //routes of signup and signin
 app.use('*', (req, res, next) => next(new Error(400)));
-app.use(formattedResponse); //middleware for response to filter data
-app.use(errorHandler);  //errorhandler middleware
+app.use(errorHandler);
 
 //port setting
 app.listen(2000, () => {

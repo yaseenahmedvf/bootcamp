@@ -24,8 +24,8 @@ exports.createBootcamp = async (req, res, next) => {
 //get all bootcamps
 exports.getAllBootcamps = async (req, res, next) => {
   try {
-    const bootcamp = Bootcamp.find();
-    next(bootcamp); //calling middleware for sorting etc
+    const bootcamp = await Bootcamp.find();
+    res.status(200).json({ bootcamp });
   } catch (err) {
     next(err);
   }

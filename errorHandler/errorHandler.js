@@ -1,8 +1,7 @@
 function errorHandler(err, req, res, next) {
     if (err.name == "CastError") {
         res.status(400).json({
-            message: "Id format is not correct",
-            err
+            message: "Id format is not correct"
         })
     }
     if (err.name == "ValidationError") {
@@ -10,7 +9,10 @@ function errorHandler(err, req, res, next) {
             message: err.message
         })
     }
-    res.send({ err: err.message })
+    res.send({
+        status: err.status,
+        message: err.message
+    })
 }
 
 module.exports = errorHandler;

@@ -5,6 +5,7 @@ const bodyparser = require('body-parser');
 const bootcampRoutes = require('./routes/bootcamp.routes');
 const errorHandler = require('./errorHandler/errorHandler');
 const authRoutes = require('./routes/auth');
+const formattedResponse = require('./middleware/response.middleware');
 
 const app = express();
 const url ='mongodb+srv://companykvf:companykvf123@cluster0.xmlz7.mongodb.net/bootcamp';
@@ -24,6 +25,7 @@ app.use(bodyparser.json());
 app.use('/api/bootcamps', bootcampRoutes);
 app.use('/api/auth', authRoutes);   //routes of signup and signin
 app.use('*', (req, res, next) => next(new Error(400)));
+app.use(formattedResponse); //middleware for response to filter data
 app.use(errorHandler);
 
 //port setting

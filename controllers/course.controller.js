@@ -34,14 +34,12 @@ exports.createBootcampCourse = async (req, res, next) => {
 exports.getBootcampCourses = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const bootcamp = await Bootcamp.findOne({ _id: id }).sort({creditHours: -1}).lean();
+        const bootcamp = await Bootcamp.findOne({ _id: id }).lean();
         if (!bootcamp) {
             throw new Error(404);
         }
-        const courses = await Course.find({ bootcamp: id }).populate('bootcamp');
-        res.status(200).json({
-            data: courses
-        });
+        const response = Course.find({bootcamp: id}).populate('bootcamp');
+        next(response); //calling middleware for sorting etc
     } catch (err) {
         next(err);
     }

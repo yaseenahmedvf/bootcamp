@@ -1,16 +1,13 @@
 const Bootcamp = require('../models/bootcamp');
+const creatError = require('http-errors');
+const schemaValid = require('../helper/schema.validation');
 
 //create bootcamps
 exports.createBootcamp = async (req, res, next) => {
   try {
-    const { bcCode, name } = req.body;
-    if (!name || !bcCode) {
-      throw new Error(404);
-    }
-    const bootcamp = new Bootcamp({
-      bcCode,
-      name
-    })
+    const result = await schemaValid.bootcampSchema.validateAsync(req.body);
+    const author = req.user.user_id;
+    const bootcamp = new Bootcamp({ ...result, author });
     await bootcamp.save();
     res.status(201).json({
       message: "Successfully created"
@@ -24,8 +21,8 @@ exports.createBootcamp = async (req, res, next) => {
 //get all bootcamps
 exports.getAllBootcamps = async (req, res, next) => {
   try {
-    const bootcamp = await Bootcamp.find();
-    next(bootcamp); //calling middleware for sorting etc
+    const bootcamp = Bootcamp.find();
+    next(bootcamp); //calling middleware to customize the response
   } catch (err) {
     next(err);
   }
@@ -37,7 +34,7 @@ exports.getBootcampById = async (req, res, next) => {
     const { id } = req.params;
     const bootcamp = await Bootcamp.findOne({ _id: id });
     if (!bootcamp) {
-      throw new Error(404);
+      throw creatError.NotFound();
     }
     res.status(200).json({ bootcamp });
   } catch (err) {
@@ -49,9 +46,13 @@ exports.getBootcampById = async (req, res, next) => {
 exports.updateBootcamp = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const author = req.user.user_id;
     const bootcamp = await Bootcamp.findOne({ _id: id });
-    if (!bootcamp || !req.body.name) {
-      throw new Error(404);
+    if (!bootcamp) {
+      throw creatError.NotFound();
+    }
+    if (bootcamp.author.toString() !== author) {
+      throw creatError.Unauthorized();
     }
     await Bootcamp.updateOne({ _id: id }, { $set: req.body });
     res.status(201).json({
@@ -68,7 +69,7 @@ exports.deleteBootcamp = async (req, res, next) => {
     const { id } = req.params;
     const bootcamp = await Bootcamp.findOne({ _id: id });
     if (!bootcamp) {
-      throw new Error(404);
+      throw creatError.NotFound();
     }
     await Bootcamp.deleteOne({ _id: id });
     res.status(201).json({

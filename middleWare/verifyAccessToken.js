@@ -10,6 +10,7 @@ module.exports = {
         if(!user.email) {
             return next(createError.Unauthorized());
         }
+        req.user = user;
         next();
     }
 }

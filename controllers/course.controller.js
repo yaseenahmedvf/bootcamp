@@ -1,31 +1,26 @@
 const Bootcamp = require('../models/bootcamp');
 const Course = require('../models/course');
+const createError = require('http-errors');
+const schemaValidate = require('../helper/schema.validation');
 
 //========= course into boot camps======
 //Create course
 exports.createBootcampCourse = async (req, res, next) => {
     try {
+        const result = await schemaValidate.courseSchema.validateAsync(req.body);
         const { id } = req.params;
-        const { cCode, cName, creditHours } = req.body;
-
         const bootcamp = await Bootcamp.findOne({ _id: id }).lean();
-        // console.log("Boootcaaaamp::::", bootcamp);
+
         if (!bootcamp) {
-            throw new Error(404);
+            throw createError.NotFound();
         }
 
-        const course = new Course({
-            cCode,
-            cName,
-            creditHours,
-            bootcamp: id
-        })
+        const course = new Course(result);
         await course.save();
         res.status(201).json({
-            message: "Successfully create"
+            message: "Successfully created"
         })
     } catch (err) {
-        console.log("errroorr ::: ", err);
         next(err);
     }
 }
@@ -36,10 +31,10 @@ exports.getBootcampCourses = async (req, res, next) => {
         const { id } = req.params;
         const bootcamp = await Bootcamp.findOne({ _id: id }).lean();
         if (!bootcamp) {
-            throw new Error(404);
+            throw createError.NotFound();
         }
         const response = Course.find({bootcamp: id}).populate('bootcamp');
-        next(response); //calling middleware for sorting etc
+        next(response); //calling middleware to customize the response
     } catch (err) {
         next(err);
     }
@@ -51,7 +46,7 @@ exports.getBootcampCourseById = async (req, res, next) => {
         const { id, courseId } = req.params;
         const bootcamp = await Bootcamp.findOne({ _id: id });
         if (!bootcamp) {
-            throw new Error(404);
+            throw createError.NotFound();
         }
         const course = await Course.findOne({ _id: courseId, bootcamp: id }).populate('bootcamp');
         res.status(200).json({
@@ -68,7 +63,7 @@ exports.updateBootcampCourseById = async (req, res, next) => {
         const { id, courseId } = req.params;
         const bootcamp = await Bootcamp.findOne({ _id: id }).lean();
         if (!bootcamp) {
-            throw new Error(404);
+            throw createError.NotFound();
         }
         await Course.updateOne({ _id: courseId, bootcamp: id }, { $set: req.body });
         res.status(201).json({
@@ -86,7 +81,7 @@ exports.deleteBootcampCourse = async (req, res, next) => {
         const bootcamp = await Bootcamp.findOne({ _id: id }).lean();
         const course = await Bootcamp.findOne({_id: courseId}).lean();
         if (!bootcamp || !course) {
-            throw new Error(404);
+            throw createError.NotFound();
         }
         await Course.deleteOne({_id: courseId, bootcamp: id});
         res.status(200).json({

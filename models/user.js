@@ -1,3 +1,4 @@
+const string = require('@hapi/joi/lib/types/string');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -14,6 +15,9 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+    },
+    passwordResetToken: {
+        type: String
     }
 })
 

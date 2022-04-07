@@ -1,10 +1,10 @@
 const routes = require('express').Router();
 const controller = require('../controllers/bootcamp.controller');
 const courseController = require('../controllers/course.controller');
-const {verifyAccessToken} = require('../middleWare/verifyAccessToken'); //The security middle ware to protect the routes from unauthrized access
+const { verifyAccessToken } = require('../middleWare/verifyAccessToken'); //The security middle ware to protect the routes from unauthrized access
 
 routes.post('/create', verifyAccessToken, controller.createBootcamp);
-routes.get('/all',verifyAccessToken, controller.getAllBootcamps);
+routes.get('/all', verifyAccessToken, controller.getAllBootcamps);
 routes.get('/:id', verifyAccessToken, controller.getBootcampById);
 routes.put('/:id', verifyAccessToken, controller.updateBootcamp);
 routes.delete('/:id', verifyAccessToken, controller.deleteBootcamp);

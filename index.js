@@ -8,7 +8,7 @@ const authRoutes = require('./routes/auth.routes');
 const formattedResponse = require('./middleware/response.middleware');
 
 const app = express();
-const url ='mongodb+srv://companykvf:companykvf123@cluster0.xmlz7.mongodb.net/bootcamp';
+const url = process.env.URL;
 
 //connection with mongo db
 main().catch(error => console.log(error));

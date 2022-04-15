@@ -7,5 +7,6 @@ routes.post('/login', controller.login);
 routes.post('/change-password', verifyAccessToken, controller.changePassword);
 routes.post('/forgot-password', controller.forgotPassword);
 routes.post('/reset-password', controller.resetPassword);
+routes.post('/check', controller.checkPollution);
 
 module.exports = routes;

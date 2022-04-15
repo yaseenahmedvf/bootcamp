@@ -57,7 +57,7 @@ app.use(         //Helmet using prevent common vulnerabilities such as clickjack
 )
 
 app.use(rateLimit({       //request limiter
-  windowMs: 15 * 60 * 1000,
+  windowMs: 10 * 60 * 1000,
   max: 100
 }))
 

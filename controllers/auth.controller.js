@@ -52,8 +52,11 @@ exports.login = async (req, res, next) => {
         expiresIn: "30d",
       }
     );
-    user.token = token;
-    res.status(200).json({
+    // user.token = token;
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    }).status(200).json({
       data: user
     })
   } catch (err) {
@@ -160,6 +163,18 @@ exports.resetPassword = async (req, res, next) => {
       message: "Password updated successfully"
     })
 
+  } catch (err) {
+    next(err);
+  }
+}
+
+//=========================================Check HTTP Parameter Pollution(HPP) ==================================
+exports.checkPollution = (req, res) => {
+  try {
+    const {name} = req.query;
+    res.json({
+      name: name
+    })
   } catch (err) {
     next(err);
   }
